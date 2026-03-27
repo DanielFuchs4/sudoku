@@ -56,22 +56,24 @@ public class HelloController {
     private String[] getSubGrid(int startRow, int startCol) {
         String[] values = new String[SIZE];
         int index = 0;
-        for (int row = startRow; row < startRow + 1; row++) {
-            for (int col = startCol; col < startCol + 1; col++) {
-                values[index++] = cells[row][col].getText();
+        for (int row = startRow; row < startRow + 3; row++) {
+            for (int col = startCol; col < startCol + 3; col++) {
+                values[index++] = cells[col][row].getText();
             }
         }
         return values;
     }
     @FXML
-    protected boolean getDupZadani(String[] radka) {
+    protected boolean getDupZadani(String[] radka, boolean reseni) {
         boolean[] seen = new boolean[SIZE+1];
         for (String s: radka) {
-            int num;
+            int num=0;
             try {
                 num = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                return false;
+                if (reseni) {
+                    return true;
+                }
             }
             if (num < 1 || num > 9) return true;
             if (seen[num]) return true;
@@ -84,12 +86,17 @@ public class HelloController {
     protected boolean getDuplicities(String[] radka) {
         boolean[] seen = new boolean[SIZE + 1];
         for (String s : radka) {
-            if (s.isEmpty()) return true;
+            if (s.isEmpty()) {
+                if (s.isEmpty()){
+                    return true;
+                }
+                continue;
+            }
             int num;
             try {
                 num = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                return false;
+                return true;
             }
             if (num < 1 || num > 9) return true;
             if (seen[num]) return true;
@@ -102,6 +109,7 @@ public class HelloController {
     protected void kontrola() {
         boolean sloupce = true;
         boolean radky = true;
+        boolean ctverce = true;
         for (int j = 0; j < SIZE; j++) {
             String[] radka = getRadku(j);
             if (getDuplicities(radka)) {
@@ -121,8 +129,14 @@ public class HelloController {
             }
         }
 
-        for (String s : getSubGrid(0, 0)) {
-
+        for (int r = 0; r < SIZE; r += 3) {
+            for (int c = 0; c < SIZE; c += 3) {
+                String[] ctverec = getSubGrid(r, c);
+                if (getDuplicities(ctverec)) {
+                    System.out.println("Ve čtverci na pozici [" + r + "," + c + "] je chyba");
+                    ctverce = false;
+                }
+            }
         }
 
 
@@ -159,7 +173,7 @@ public class HelloController {
         boolean radky = true;
         for (int j = 0; j < SIZE; j++) {
             String[] radka = getRadku(j);
-            if (getDupZadani(radka)) {
+            if (getDupZadani(radka, false)) {
                 System.out.println("V radce " + (j + 1) + " je chyba");
                 radky = false;
             } else {
@@ -168,7 +182,7 @@ public class HelloController {
         }
         for (int j = 0; j < SIZE; j++) {
             String[] sloupec = getSloupec(j);
-            if (getDupZadani(sloupec)) {
+            if (getDupZadani(sloupec, false)) {
                 System.out.println("Ve sloupci " + (j + 1) + " je chyba");
                 sloupce = false;
             } else {
