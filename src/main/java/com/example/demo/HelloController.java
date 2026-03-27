@@ -67,6 +67,12 @@ public class HelloController {
     protected boolean getDupZadani(String[] radka, boolean reseni) {
         boolean[] seen = new boolean[SIZE+1];
         for (String s: radka) {
+            if (s.isEmpty()) {
+                if (reseni){
+                    return true;
+                }
+                continue;
+            }
             int num=0;
             try {
                 num = Integer.parseInt(s);
@@ -83,20 +89,20 @@ public class HelloController {
     }
 
     @FXML
-    protected boolean getDuplicities(String[] radka) {
+    protected boolean getDuplicities(String[] radka, boolean reseni) {
         boolean[] seen = new boolean[SIZE + 1];
         for (String s : radka) {
             if (s.isEmpty()) {
-                if (s.isEmpty()){
+                if (reseni){
                     return true;
                 }
                 continue;
             }
-            int num;
+            int num = 0;
             try {
                 num = Integer.parseInt(s);
             } catch (NumberFormatException e) {
-                return true;
+                if (reseni) return true;
             }
             if (num < 1 || num > 9) return true;
             if (seen[num]) return true;
@@ -112,7 +118,7 @@ public class HelloController {
         boolean ctverce = true;
         for (int j = 0; j < SIZE; j++) {
             String[] radka = getRadku(j);
-            if (getDuplicities(radka)) {
+            if (getDuplicities(radka, false)) {
                 System.out.println("V radce " + (j + 1) + " je chyba");
                 radky = false;
             } else {
@@ -121,7 +127,7 @@ public class HelloController {
         }
         for (int j = 0; j < SIZE; j++) {
             String[] sloupec = getSloupec(j);
-            if (getDuplicities(sloupec)) {
+            if (getDuplicities(sloupec, false)) {
                 System.out.println("Ve sloupci " + (j + 1) + " je chyba");
                 sloupce = false;
             } else {
@@ -132,7 +138,7 @@ public class HelloController {
         for (int r = 0; r < SIZE; r += 3) {
             for (int c = 0; c < SIZE; c += 3) {
                 String[] ctverec = getSubGrid(r, c);
-                if (getDuplicities(ctverec)) {
+                if (getDuplicities(ctverec,  false)) {
                     System.out.println("Ve čtverci na pozici [" + r + "," + c + "] je chyba");
                     ctverce = false;
                 }
@@ -156,7 +162,7 @@ public class HelloController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("informace");
             alert.setHeaderText("DULEZITE UPOZORNENI");
-            alert.setContentText("V radkach i sloupcich je chyba");
+            alert.setContentText("vše je vpoho");
             alert.showAndWait();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
