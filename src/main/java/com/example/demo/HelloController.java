@@ -5,7 +5,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public class HelloController {
+public class
+HelloController {
     @FXML
     private GridPane hraciPole;
     private final int SIZE = 9;
